@@ -4,7 +4,9 @@ export default class Tile {
   constructor(p, params) {
     this.#p = p;
     this.color = params && (params.color ? params.color : false);
-
+    this.color_select =
+      params && (params.color_select ? params.color_select : "red");
+    this.selected = false;
     this.vertex_width =
       params && (params.vertex_width ? params.vertex_width : [0, 0, 0, 0]);
     this.vertex_color =
@@ -29,8 +31,8 @@ export default class Tile {
     const size = this.size;
     const x = this.x;
     const y = this.y;
-    const color = this.color;
-
+    const color = this.selected?this.color_select:this.color;
+    
     // desenha o tile
     p.noStroke();
     color ? p.fill(p.color(color)) : p.noFill();
@@ -92,5 +94,8 @@ export default class Tile {
     p.vertex(x_left, y_bottom);
 
     p.endShape();
+  }
+  select(status) {
+    this.selected = status;
   }
 }

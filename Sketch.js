@@ -1,4 +1,4 @@
-import Tile from "./components/Tile.js";
+import Grid from "./components/Grid.js";
 
 export default class Sketch {
   #container;
@@ -7,25 +7,25 @@ export default class Sketch {
     this.#container = params && params.container ? params.container : "";
 
     this.sketch = function (p) {
-      let tile = new Tile(p, {
-        pos_i: 1,
-        pos_j: 1,
-        size: 20,
-        border_width: [0, 0, 0, 0],
-        border_color: ["red", "red", "red", "red"],
-        vertex_width: [2, 2, 2, 2],
-        vertex_color: ["black", "black", "black", "black"],
-        color: "green",
-      });
+      let grid = new Grid(p,8, 8, 60);
+      let current_cell;
 
       p.setup = function () {
-        p.createCanvas(200, 200);
+        p.createCanvas(480, 480);
+        
       };
 
       p.draw = function () {
         p.background(220);
-        tile.show();
+        grid.show();
       };
+
+      p.mousePressed = function(){
+
+        var cell = grid.selectCell(p.mouseX,p.mouseY);
+        
+       
+      }
     };
   }
 
