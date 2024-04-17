@@ -7,11 +7,13 @@ export default class Sketch {
     this.#container = params && params.container ? params.container : "";
 
     this.sketch = function (p) {
-      let grid = new Grid(p,8, 8, 60);
-      let current_cell;
+      const cols = 20;
+      const rows = 20;
+      const size = 20
+      let grid = new Grid(p,rows, cols, size);
 
       p.setup = function () {
-        p.createCanvas(480, 480);
+        p.createCanvas(rows * size , cols * size);
         
       };
 

@@ -3,9 +3,10 @@ export default class Tile {
 
   constructor(p, params) {
     this.#p = p;
-    this.color = params && (params.color ? params.color : false);
+    this.color_unselect = params && (params.color ? params.color : false);
     this.color_select =
       params && (params.color_select ? params.color_select : "red");
+    this.color = this.color_unselect;
     this.selected = false;
     this.vertex_width =
       params && (params.vertex_width ? params.vertex_width : [0, 0, 0, 0]);
@@ -23,79 +24,103 @@ export default class Tile {
     this.x = pos_i * s;
     this.y = pos_j * s;
     this.size = s;
+
+    this.isVertex = this.vertex_width.find((value) => value > 0) ? true : false;
+    this.isBorder = this.border_width.find((value) => value > 0) ? true : false;
   }
 
   show() {
     //melhorar a leitura
+
+    this.drawShape();
+    this.drawPerimeter(this.isBorder);
+    this.drawVertices(this.isVertex);
+  }
+
+  drawShape() {
+    // desenha o tile
     const p = this.#p;
     const size = this.size;
     const x = this.x;
     const y = this.y;
-    const color = this.selected?this.color_select:this.color;
-    
-    // desenha o tile
+    const color = this.color;
+
     p.noStroke();
     color ? p.fill(p.color(color)) : p.noFill();
     size > 0 && p.rect(x, y, size, size);
-    this.drawPerimeter();
   }
 
-  drawPerimeter() {
+  drawPerimeter(status) {
     // melhorar a leitura
-    const p = this.#p;
-    const border_color = this.border_color;
-    const border_width = this.border_width;
-    const vertex_width = this.vertex_width;
-    const vertex_color = this.vertex_color;
-    const x_left = this.x;
-    const x_right = this.x + this.size;
-    const y_up = this.y;
-    const y_bottom = this.y + this.size;
+    if (status) {
+      const p = this.#p;
+      const border_color = this.border_color;
+      const border_width = this.border_width;
+      const vertex_width = this.vertex_width;
+      const vertex_color = this.vertex_color;
+      const x_left = this.x;
+      const x_right = this.x + this.size;
+      const y_up = this.y;
+      const y_bottom = this.y + this.size;
 
-    //TOP
-    p.strokeWeight(border_width[0]);
-    p.stroke(p.color(border_color[0]));
-    p.line(x_left, y_up, x_right, y_up);
+      //TOP
+      p.strokeWeight(border_width[0]);
+      p.stroke(p.color(border_color[0]));
+      p.line(x_left, y_up, x_right, y_up);
 
-    //RIGHT
-    p.strokeWeight(border_width[1]);
-    p.stroke(p.color(border_color[1]));
-    p.line(x_right, y_up, x_right, y_bottom);
+      //RIGHT
+      p.strokeWeight(border_width[1]);
+      p.stroke(p.color(border_color[1]));
+      p.line(x_right, y_up, x_right, y_bottom);
 
-    //BOTTOM
-    p.strokeWeight(border_width[2]);
-    p.stroke(p.color(border_color[2]));
-    p.line(x_right, y_bottom, x_left, y_bottom);
+      //BOTTOM
+      p.strokeWeight(border_width[2]);
+      p.stroke(p.color(border_color[2]));
+      p.line(x_right, y_bottom, x_left, y_bottom);
 
-    //LEFT
+      //LEFT
 
-    p.strokeWeight(border_width[3]);
-    p.stroke(p.color(border_color[3]));
-    p.line(x_left, y_bottom, x_left, y_up);
+      p.strokeWeight(border_width[3]);
+      p.stroke(p.color(border_color[3]));
+      p.line(x_left, y_bottom, x_left, y_up);
+    }
+  }
 
+  drawVertices(status) {
     //VERTICES
 
-    p.beginShape(p.POINTS);
+    if (status) {
+      const p = this.#p;
+      const vertex_width = this.vertex_width;
+      const vertex_color = this.vertex_color;
+      const x_left = this.x;
+      const x_right = this.x + this.size;
+      const y_up = this.y;
+      const y_bottom = this.y + this.size;
 
-    p.stroke(p.color(vertex_color[0]));
-    p.strokeWeight(vertex_width[0]);
-    p.vertex(x_left, y_up);
+      p.beginShape(p.POINTS);
 
-    p.stroke(p.color(vertex_color[1]));
-    p.strokeWeight(vertex_width[1]);
-    p.vertex(x_right, y_up);
+      p.stroke(p.color(vertex_color[0]));
+      p.strokeWeight(vertex_width[0]);
+      p.vertex(x_left, y_up);
 
-    p.stroke(p.color(vertex_color[2]));
-    p.strokeWeight(vertex_width[2]);
-    p.vertex(x_right, y_bottom);
+      p.stroke(p.color(vertex_color[1]));
+      p.strokeWeight(vertex_width[1]);
+      p.vertex(x_right, y_up);
 
-    p.stroke(p.color(vertex_color[3]));
-    p.strokeWeight(vertex_width[3]);
-    p.vertex(x_left, y_bottom);
+      p.stroke(p.color(vertex_color[2]));
+      p.strokeWeight(vertex_width[2]);
+      p.vertex(x_right, y_bottom);
 
-    p.endShape();
+      p.stroke(p.color(vertex_color[3]));
+      p.strokeWeight(vertex_width[3]);
+      p.vertex(x_left, y_bottom);
+
+      p.endShape();
+    }
   }
   select(status) {
     this.selected = status;
+    this.color = this.selected ? this.color_select : this.color_unselect;
   }
 }
