@@ -9,9 +9,11 @@ export default class Grid {
     this.logFPS = true;
     this.frameCount = 0;
     this.lastFrameTime = performance.now();
-
+    this.mult_select = false;
     this.cells = Array();
-    this.current_cell = null;
+    this.current_cell = Array();
+    this.need_update = false;
+    this.need_full_update = true;
 
     for (var y = 0; y < this.g_height; y++) {
       for (var x = 0; x < this.g_width; x++) {
@@ -20,9 +22,9 @@ export default class Grid {
             pos_i: x,
             pos_j: y,
             size: this.scl,
-            border_width: [1,1,1,1],
+            border_width: [1, 1, 1, 1],
             border_color: ["gray", "gray", "gray", "gray"],
-            vertex_width: [0,0,0,0],
+            vertex_width: [0, 0, 0, 0],
             vertex_color: ["black", "black", "black", "black"],
             color: [230, 230, 230],
             color_select: [255, 0, 255],
@@ -31,13 +33,33 @@ export default class Grid {
       }
     }
   }
-  show() {
-    this.logFPS && this.calcFPS();
 
+  init() {
     //ESTE CÓDIGO FICOU COM 46 FPS
     this.cells.forEach((element) => {
       element.show();
     });
+  }
+
+  show() {
+    //this.logFPS && this.calcFPS();
+
+    this.current_cell.forEach((element) => {
+      element.show();
+    });
+
+    // Using filter that creates another array and reasign to the same variable name
+    //this.current_cell = this.current_cell.filter((element) => element.selected === true);
+
+
+    // using splice direct to the original array and not creating new one
+    for(let i = this.current_cell.length-1; i>=0; i--){
+      if (this.current_cell[i].selected === false){
+        this.current_cell.splice(i,1);
+      }
+    }
+
+    console.log(this.current_cell.length)
 
     /* 
  ESTE FICOU COM 40 FPS
@@ -72,9 +94,12 @@ for (var i = 0; i < this.cells.length; i++) {
       if (y > -1 && y < this.g_height) {
         var index = x + y * this.g_width;
 
-        if (this.current_cell) this.current_cell.select(false);
+        if (this.mult_select === false) {
+          this.current_cell.forEach((element) => element.select(false));
+        }
+
         this.cells[index].select(true);
-        this.current_cell = this.cells[index];
+        this.current_cell.push(this.cells[index]);
       }
     }
   }
@@ -82,7 +107,7 @@ for (var i = 0; i < this.cells.length; i++) {
   calcFPS() {
     const current_time = performance.now();
     const deltaTime = current_time - this.lastFrameTime;
-    console.log(`Delta: ${deltaTime}`)
+    console.log(`Delta: ${deltaTime}`);
     this.frameCount++;
     if (deltaTime >= 1000) {
       const fps = Math.round((this.frameCount * 1000) / deltaTime);

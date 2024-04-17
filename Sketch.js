@@ -15,11 +15,13 @@ export default class Sketch {
       p.setup = function () {
         p.createCanvas(rows * size , cols * size);
         p.noLoop();
+        p.background(220);
+        grid.init();
         
       };
 
       p.draw = function () {
-        p.background(220);
+      
         grid.show();
       };
 
