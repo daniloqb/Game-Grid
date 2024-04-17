@@ -7,13 +7,14 @@ export default class Sketch {
     this.#container = params && params.container ? params.container : "";
 
     this.sketch = function (p) {
-      const cols = 20;
-      const rows = 20;
-      const size = 20
+      const cols = 140;
+      const rows = 140;
+      const size = 5
       let grid = new Grid(p,rows, cols, size);
 
       p.setup = function () {
         p.createCanvas(rows * size , cols * size);
+        p.noLoop();
         
       };
 
@@ -25,6 +26,7 @@ export default class Sketch {
       p.mousePressed = function(){
 
         var cell = grid.selectCell(p.mouseX,p.mouseY);
+        p.redraw();
         
        
       }

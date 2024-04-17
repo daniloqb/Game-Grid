@@ -6,7 +6,7 @@ export default class Grid {
     this.g_width = w;
     this.g_height = h;
     this.scl = s;
-    this.logFPS = false;
+    this.logFPS = true;
     this.frameCount = 0;
     this.lastFrameTime = performance.now();
 
@@ -20,9 +20,9 @@ export default class Grid {
             pos_i: x,
             pos_j: y,
             size: this.scl,
-           // border_width: [0.6, 0.6, 0.6, 0.6],
+            border_width: [1,1,1,1],
             border_color: ["gray", "gray", "gray", "gray"],
-           // vertex_width: [3, 3, 3, 3],
+            vertex_width: [0,0,0,0],
             vertex_color: ["black", "black", "black", "black"],
             color: [230, 230, 230],
             color_select: [255, 0, 255],
@@ -82,6 +82,7 @@ for (var i = 0; i < this.cells.length; i++) {
   calcFPS() {
     const current_time = performance.now();
     const deltaTime = current_time - this.lastFrameTime;
+    console.log(`Delta: ${deltaTime}`)
     this.frameCount++;
     if (deltaTime >= 1000) {
       const fps = Math.round((this.frameCount * 1000) / deltaTime);
